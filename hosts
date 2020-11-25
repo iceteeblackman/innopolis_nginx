@@ -1,0 +1,5 @@
+[all]
+nginx001 	ansible_ssh_host=10.90.138.8
+elk001 		ansible_ssh_host=10.90.138.7
+jenkins001 	ansible_ssh_host=10.90.138.10
+zabbix001 	ansible_ssh_host=10.90.138.9
