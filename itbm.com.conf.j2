@@ -1,0 +1,10 @@
+server {
+	listen 80;
+	server_name itbm.com;
+	access_log /var/log/nginx/itbm.com-access.log main;
+	root   /var/www/itbm.com;
+
+	location / {
+		index  index.html index.htm;
+	}
+} 

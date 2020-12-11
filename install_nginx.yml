@@ -10,10 +10,19 @@
       yum:
         name: nginx
         state: latest
+    
+    - name: Create dir
+      file:
+        path: /var/www/itbm.com
+        mode: 0755
+        state: directory
 
     - name: Add nginx virtualhost config
       template:
-        src: nginx_tpl/itbm.com.conf
+        src: itbm.com.conf.j2
+        owner: nginx
+        group: nginx
+        mode: 0644
         dest: /etc/nginx/conf.d/itbm.com.conf
 
     - name: Check nginx configs
@@ -24,21 +33,25 @@
       debug:
         msg: "{{ nginx_config_status }}"
     
-    - name: Create dir
-      file:
-        path: /var/www/itbm.com
-        mode: 0755
-        state: directory
-
-    - name: Copy index file for test
-      copy:
-        src: nginx_tpl/index.html
-        dest: /var/www/itbm.com
-
-   - name: Service nginx restart and enable on boot
+    - name: Add index template for test
+      template:
+        src: index.html.j2
+        dest: /var/www/itbm.com/index.html
+  
+    - name: Service nginx restart and enable on boot
       systemd:
         name: nginx
         state: restarted
         enabled: yes
         daemon_reload: yes
-      when: nginx_config_status.rc == 0
+    
+    # Change firewall zone
+
+    - name: Set active zone
+      firewalld:
+        zone: trusted
+        interface: eth0
+        state: enabled
+        immediate: yes
+        permanent: true
+
